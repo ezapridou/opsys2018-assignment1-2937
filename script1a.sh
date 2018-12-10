@@ -5,12 +5,12 @@ touch temp
 temp_file="$PWD/temp"
 
 while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ $line = '#'* ]]; then
+	if [[ $line = '#'* ]]; then #if it is a comment ignore
 		continue
 	fi
-	filename=${line////$'_'}
+	filename=${line////$'_'} #replace '/' with '_' 
 	
-	if [[ $($CURL -s $line) = "" ]]; then
+	if [[ $($CURL -s $line) = "" ]]; then #if curl fails
 		if ! [[ -f "$filename" ]]; then
 			touch $filename
 			echo "" >> "$PWD/$filename"
@@ -20,7 +20,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		continue
 	fi
 	
-	if [[ -f "$filename" ]]; then
+	if [[ -f "$filename" ]]; then #if I have previous data for this website
 		$CURL -s $line >> "$temp_file"
 		if ! cmp -s "$filename" "$temp_file"; then
 			echo $line

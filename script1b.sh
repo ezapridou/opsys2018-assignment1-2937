@@ -2,11 +2,11 @@
 CURL='/usr/bin/curl'
 
 function url_check(){
-	line=$1
+	local line=$1
 	if [[ $line = '#'* ]]; then
 		return
 	fi
-	filename=${line////$'_'}
+	local filename=${line////$'_'}
 	
 	if [[ $($CURL -s $line) = "" ]]; then
 		if ! [[ -f "$filename" ]]; then
@@ -19,7 +19,7 @@ function url_check(){
 	fi
 
 	touch "temp_$filename"
-	temp_file="$PWD/temp_$filename"
+	local temp_file="$PWD/temp_$filename"
 	if [[ -f "$filename" ]]; then
 		$CURL -s $line >> "$temp_file"
 		if ! cmp -s "$filename" "$temp_file"; then
@@ -32,6 +32,7 @@ function url_check(){
 		echo "$line INIT"
 		$CURL -s $line >> "$PWD/$filename"
 	fi
+	rm $PWD/temp_$filename
 }
 
 {
